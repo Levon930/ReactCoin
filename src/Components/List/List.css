@@ -1,0 +1,19 @@
+.comp {
+  display: flex;
+}
+.comp ul {
+  list-style: none;
+}
+.comp ul li:first-of-type {
+  width: 200px;
+  margin: 0 auto;
+  font-weight: 900;
+  color: red;
+}
+.comp ul li {
+  display: flex;
+  align-items: center;
+}
+.comp ul li input {
+  margin-left: 10px;
+}

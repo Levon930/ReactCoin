@@ -11,9 +11,9 @@ const App = () => {
   );
 };
 ReactDOM.render(
-  <React.StrictMode>
+  <div>
     <App />
     <List />
-  </React.StrictMode>,
+  </div>,
   document.getElementById("root")
 );
