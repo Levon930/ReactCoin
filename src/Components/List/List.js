@@ -1,97 +1,74 @@
 import React from "react";
 import "./List.css";
+import fetchService from "../../Services/Fetch";
 
 class List extends React.Component {
   constructor() {
     super();
     this.state = {
-      loading: false,
+      loading: true,
       currencies: [],
       error: null,
     };
   }
-  CompletChange = (id) => {
-    console.log(id);
-
-    this.setState((prevState) => {
-      const a = prevState.currencies.map((item) => {
-        if (id === item.id) {
-          item.completed = !item.completed;
-        }
-        return item;
-      });
-      console.log(a);
-
-      return {
-        currencies: a,
-      };
+  renderChangePercent = (percent) => {
+    if (percent > 0) {
+      return <span className="percent-raised">{percent}% &uarr;</span>;
+    } else if (percent < 0) {
+      return <span className="percent-fallen">{percent}% &darr;</span>;
+    } else {
+      return <span>{percent}</span>;
+    }
+  };
+  currenciesGeter = async () => {
+    const response = await fetchService.get(
+      "cryptocurrencies?page=1&perPage=20"
+    );
+    this.setState({
+      currencies: response.currencies,
+      loading: false,
     });
   };
 
   componentDidMount() {
-    this.setState({
-      loading: true,
-    });
-    fetch("https://jsonplaceholder.typicode.com/todos")
-      .then((response) => response.json())
-      .then((json) =>
-        this.setState((prevState) => {
-          return {
-            currencies: json,
-            loading: !prevState.loading,
-          };
-        })
-      );
+    this.currenciesGeter();
   }
 
   render() {
-    console.log("render");
-
     const { loading, currencies } = this.state;
-    //const { userId, id, title, completed } = currencies;
     if (loading) {
-      return <div>Loading...</div>;
+      return <div>loading....</div>;
     }
-    const compTru = currencies.map((item) => {
-      if (item.completed) {
-        return (
-          <li
-            key={item.id}
-            onClick={(e) => {
-              this.CompletChange(item.id);
-            }}
-          >
-            <p>{item.title}</p>
-            <input type="checkbox" checked={item.completed} />
-          </li>
-        );
-      }
-    });
-    const compFal = currencies.map((item) => {
-      if (!item.completed) {
-        return (
-          <li
-            key={item.id}
-            onClick={(e) => {
-              this.CompletChange(item.id);
-            }}
-          >
-            <p>{item.title}</p>
-            <input type="checkbox" checked={item.completed} />
-          </li>
-        );
-      }
-    });
     return (
-      <div className="comp">
-        <ul>
-          <li>Completed</li>
-          {compTru}
-        </ul>
-        <ul>
-          <li>No completed</li>
-          {compFal}
-        </ul>
+      <div className="Table-container">
+        <table className="Table">
+          <thead className="Table-head">
+            <tr>
+              <th>Cryptocurrency</th>
+              <th>Price</th>
+              <th>Market Cap</th>
+              <th>24H Change</th>
+            </tr>
+          </thead>
+          <tbody className="Table-body">
+            {currencies.map((currency) => (
+              <tr key={currency.id}>
+                <td>
+                  <span className="Table-rank">{currency.rank}</span>
+                  {currency.name}
+                </td>
+                <td>
+                  <span className="Table-dollar">$</span>
+                  {currency.price}
+                </td>
+                <td>
+                  <span className="Table-dollar">${currency.marketCap} </span>
+                </td>
+                <td>{this.renderChangePercent(currency.percentChange24h)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }

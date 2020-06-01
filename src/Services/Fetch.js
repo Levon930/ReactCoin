@@ -2,28 +2,31 @@
 
 class Fetch {
   static instance = null;
+
+  #DOMAIN = "https://api.udilia.com/coins/v1";
   constructor() {
     if (Fetch.instance) {
       return Fetch.instance;
     }
+
     Fetch.instance = this;
   }
-  async ReaquestData() {
-    let response = await fetch(URL, Maetod);
+  async ReaquestData(URL, method) {
+    let response = await fetch(URL, { method: method });
     let data = await response.json();
     return data;
   }
   get(URL) {
-    this.ReaquestData(URL, "GET");
+    return this.ReaquestData(`${this.#DOMAIN}/${URL}`, "GET");
   }
   put(URL) {
-    this.ReaquestData(URL, "PUT");
+    return this.ReaquestData(`${this.#DOMAIN}/${URL}`, "PUT");
   }
   post(URL) {
-    this.ReaquestData(URL, "POST");
+    return this.ReaquestData(`${this.#DOMAIN}/${URL}`, "POST");
   }
   delete(URL) {
-    this.ReaquestData(URL, "DELETE");
+    return this.ReaquestData(`${this.#DOMAIN}/${URL}`, "DELETE");
   }
 }
 const fetchService = new Fetch();
