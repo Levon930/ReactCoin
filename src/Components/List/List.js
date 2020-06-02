@@ -51,7 +51,7 @@ class List extends React.Component {
   SortMany = (data) => {
     this.setState((prevState) => {
       const sort = prevState.currencies.sort((a, b) => {
-        return b[data] - a[data];
+        return parseInt(b[data]) - parseInt(a[data]);
       });
       return {
         currencies: sort,
