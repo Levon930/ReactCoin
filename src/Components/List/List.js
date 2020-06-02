@@ -20,13 +20,42 @@ class List extends React.Component {
       return <span>{percent}</span>;
     }
   };
-  currenciesGeter = async () => {
+  currenciesGeter = async (quantity = 10) => {
     const response = await fetchService.get(
-      "cryptocurrencies?page=1&perPage=20"
+      `cryptocurrencies?page=1&perPage=${quantity}`
     );
     this.setState({
       currencies: response.currencies,
       loading: false,
+    });
+  };
+  SortAlphabet = () => {
+    this.setState((prevState) => {
+      const sort = prevState.currencies.sort((a, b) => {
+        let nameA = a.name.toLowerCase(),
+          nameB = b.name.toLowerCase();
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+      });
+
+      console.log(sort);
+      return {
+        currencies: sort,
+      };
+    });
+  };
+  SortMany = (data) => {
+    this.setState((prevState) => {
+      const sort = prevState.currencies.sort((a, b) => {
+        return b[data] - a[data];
+      });
+      return {
+        currencies: sort,
+      };
     });
   };
 
@@ -35,19 +64,49 @@ class List extends React.Component {
   }
 
   render() {
+    console.log("render");
     const { loading, currencies } = this.state;
     if (loading) {
       return <div>loading....</div>;
     }
     return (
       <div className="Table-container">
+        <select
+          onChange={(e) => {
+            this.currenciesGeter(e.target.value);
+          }}
+        >
+          <option>10</option>
+          <option>20</option>
+          <option>30</option>
+          <option>40</option>
+          <option>50</option>
+        </select>
         <table className="Table">
           <thead className="Table-head">
             <tr>
-              <th>Cryptocurrency</th>
-              <th>Price</th>
-              <th>Market Cap</th>
-              <th>24H Change</th>
+              <th onClick={this.SortAlphabet}>Cryptocurrency</th>
+              <th
+                onClick={(e) => {
+                  this.SortMany("price");
+                }}
+              >
+                Price
+              </th>
+              <th
+                onClick={(e) => {
+                  this.SortMany("marketCap");
+                }}
+              >
+                Market Cap
+              </th>
+              <th
+                onClick={(e) => {
+                  this.SortMany("percentChange24h");
+                }}
+              >
+                24H Change
+              </th>
             </tr>
           </thead>
           <tbody className="Table-body">
