@@ -1,6 +1,9 @@
 import React from "react";
 import "./List.css";
 import fetchService from "../../Services/Fetch";
+import Pagination from "../Pagination/Pagination";
+import Table from "./Table";
+import Loading from "../Loading/Loading";
 
 class List extends React.Component {
   constructor() {
@@ -8,9 +11,26 @@ class List extends React.Component {
     this.state = {
       loading: true,
       currencies: [],
+      page: 1,
       error: null,
+      totalPages: 0,
     };
   }
+  handlePaginationClick = (direction) => {
+    if (direction === "next") {
+      this.setState((prev) => {
+        return {
+          page: prev.page + 1,
+        };
+      }, this.currenciesGeter);
+    } else {
+      this.setState((prev) => {
+        return {
+          page: prev.page - 1,
+        };
+      }, this.currenciesGeter);
+    }
+  };
   renderChangePercent = (percent) => {
     if (percent > 0) {
       return <span className="percent-raised">{percent}% &uarr;</span>;
@@ -20,13 +40,14 @@ class List extends React.Component {
       return <span>{percent}</span>;
     }
   };
-  currenciesGeter = async (quantity = 10) => {
+  currenciesGeter = async () => {
     const response = await fetchService.get(
-      `cryptocurrencies?page=1&perPage=${quantity}`
+      `cryptocurrencies?page=${this.state.page}&perPage=20`
     );
     this.setState({
       currencies: response.currencies,
       loading: false,
+      totalPages: response.totalPages,
     });
   };
   SortAlphabet = () => {
@@ -65,70 +86,30 @@ class List extends React.Component {
 
   render() {
     console.log("render");
-    const { loading, currencies } = this.state;
+    const { loading, currencies, totalPages, page } = this.state;
     if (loading) {
-      return <div>loading....</div>;
+      return (
+        <div className="loading-container">
+          <Loading />
+        </div>
+      );
     }
     return (
-      <div className="Table-container">
-        <select
-          onChange={(e) => {
-            this.currenciesGeter(e.target.value);
-          }}
-        >
-          <option>10</option>
-          <option>20</option>
-          <option>30</option>
-          <option>40</option>
-          <option>50</option>
-        </select>
-        <table className="Table">
-          <thead className="Table-head">
-            <tr>
-              <th onClick={this.SortAlphabet}>Cryptocurrency</th>
-              <th
-                onClick={(e) => {
-                  this.SortMany("price");
-                }}
-              >
-                Price
-              </th>
-              <th
-                onClick={(e) => {
-                  this.SortMany("marketCap");
-                }}
-              >
-                Market Cap
-              </th>
-              <th
-                onClick={(e) => {
-                  this.SortMany("percentChange24h");
-                }}
-              >
-                24H Change
-              </th>
-            </tr>
-          </thead>
-          <tbody className="Table-body">
-            {currencies.map((currency) => (
-              <tr key={currency.id}>
-                <td>
-                  <span className="Table-rank">{currency.rank}</span>
-                  {currency.name}
-                </td>
-                <td>
-                  <span className="Table-dollar">$</span>
-                  {currency.price}
-                </td>
-                <td>
-                  <span className="Table-dollar">${currency.marketCap} </span>
-                </td>
-                <td>{this.renderChangePercent(currency.percentChange24h)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <>
+        <Table
+          currencies={currencies}
+          loading={loading}
+          currenciesGeter={this.currenciesGeter}
+          SortAlphabet={this.SortAlphabet}
+          SortMany={this.SortMany}
+          renderChangePercent={this.renderChangePercent}
+        />
+        <Pagination
+          handlePaginationClick={this.handlePaginationClick}
+          totalPages={totalPages}
+          page={page}
+        />
+      </>
     );
   }
 }
