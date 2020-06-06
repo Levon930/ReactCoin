@@ -10,17 +10,6 @@ const Table = ({
 }) => {
   return (
     <div className="Table-container">
-      <select
-        onChange={(e) => {
-          currenciesGeter(e.target.value);
-        }}
-      >
-        <option>10</option>
-        <option>20</option>
-        <option>30</option>
-        <option>40</option>
-        <option>50</option>
-      </select>
       <table className="Table">
         <thead className="Table-head">
           <tr>
