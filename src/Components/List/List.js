@@ -31,15 +31,7 @@ class List extends React.Component {
       }, this.currenciesGeter);
     }
   };
-  renderChangePercent = (percent) => {
-    if (percent > 0) {
-      return <span className="percent-raised">{percent}% &uarr;</span>;
-    } else if (percent < 0) {
-      return <span className="percent-fallen">{percent}% &darr;</span>;
-    } else {
-      return <span>{percent}</span>;
-    }
-  };
+
   currenciesGeter = async () => {
     const response = await fetchService.get(
       `cryptocurrencies?page=${this.state.page}&perPage=20`
@@ -63,7 +55,6 @@ class List extends React.Component {
         }
       });
 
-      console.log(sort);
       return {
         currencies: sort,
       };
@@ -102,7 +93,6 @@ class List extends React.Component {
           currenciesGeter={this.currenciesGeter}
           SortAlphabet={this.SortAlphabet}
           SortMany={this.SortMany}
-          renderChangePercent={this.renderChangePercent}
         />
         <Pagination
           handlePaginationClick={this.handlePaginationClick}
