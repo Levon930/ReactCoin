@@ -76,7 +76,6 @@ class List extends React.Component {
   }
 
   render() {
-    console.log("render");
     const { loading, currencies, totalPages, page } = this.state;
     if (loading) {
       return (

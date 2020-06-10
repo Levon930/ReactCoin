@@ -3,7 +3,7 @@ import "./Detalis.css";
 import fetchService from "../../Services/Fetch";
 import Loading from "../Loading/Loading";
 import renderChangePercent from "../../Services/src/Helpers/renderChangePercent";
-class Details extends React.Component {
+class Details extends React.PureComponent {
   constructor() {
     super();
     this.state = {
@@ -23,6 +23,11 @@ class Details extends React.Component {
   };
   componentDidMount() {
     this.getCurrency();
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.getCurrency();
+    }
   }
   render() {
     const { loading, currency } = this.state;
