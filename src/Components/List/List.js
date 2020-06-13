@@ -4,6 +4,7 @@ import fetchService from "../../Services/Fetch";
 import Pagination from "../Pagination/Pagination";
 import Table from "./Table";
 import Loading from "../Loading/Loading";
+import CurrencyContext from "../context/currencies";
 
 class List extends React.Component {
   constructor() {
@@ -85,7 +86,7 @@ class List extends React.Component {
       );
     }
     return (
-      <>
+      <CurrencyContext.Provider value={this.state.currencies}>
         <Table
           currencies={currencies}
           loading={loading}
@@ -98,7 +99,7 @@ class List extends React.Component {
           totalPages={totalPages}
           page={page}
         />
-      </>
+      </CurrencyContext.Provider>
     );
   }
 }
