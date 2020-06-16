@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import "./Detalis.css";
 import fetchService from "../../Services/Fetch";
 import Loading from "../Loading/Loading";
@@ -17,7 +17,7 @@ const Details = (props) => {
   useEffect(() => {
     getCurrency();
     console.log(currency);
-  });
+  }, []);
   useEffect(() => {
     getCurrency();
   }, [props.match.params.id]);
@@ -30,6 +30,8 @@ const Details = (props) => {
       </div>
     );
   }
+  console.log("render");
+
   return (
     <div className="Detail">
       <h1 className="Detail-heading">
@@ -67,4 +69,4 @@ const Details = (props) => {
   );
 };
 
-export default Details;
+export default memo(Details);
