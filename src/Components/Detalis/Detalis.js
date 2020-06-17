@@ -4,24 +4,21 @@ import fetchService from "../../Services/Fetch";
 import Loading from "../Loading/Loading";
 import renderChangePercent from "../../Services/src/Helpers/renderChangePercent";
 const Details = (props) => {
-  const [currency, setCurrency] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [data, setCurrency] = useState({ currency: {}, loading: true });
+  //const [loading, setLoading] = useState(true);
 
   const getCurrency = async () => {
     const curID = props.match.params.id;
 
     const response = await fetchService.get(`cryptocurrencies/${curID}`);
-    setCurrency(response);
-    setLoading(false);
+    setCurrency({ currency: response, loading: false });
+    //setLoading(false);
   };
-  useEffect(() => {
-    getCurrency();
-    console.log(currency);
-  }, []);
+
   useEffect(() => {
     getCurrency();
   }, [props.match.params.id]);
-
+  const { currency, loading } = data;
   if (loading) {
     return (
       <div className={"loading-container"}>
@@ -69,4 +66,4 @@ const Details = (props) => {
   );
 };
 
-export default memo(Details);
+export default Details;
